@@ -10,7 +10,7 @@ ML_DOC_URL = ML_DOC_URL_BASE + (ML_VERSION if len(ML_VERSION) > 1 else "latest")
 ML_REPO_ISSUES_URL = f"https://github.com/{ML_REPO_OWNER}/{ML_REPO_NAME}/issues"
 ML_DOC_URL_DESCRIPTORS_ROOT = f"{ML_DOC_URL}/descriptors"
 
-ML_DOCKER_OWNER = "Dalton-Murray"
+ML_DOCKER_OWNER = "oxsecurity"
 ML_DOCKER_NAME = "megalinter"
 ML_DOCKER_IMAGE = f"{ML_DOCKER_OWNER}/{ML_DOCKER_NAME}"
 ML_DOCKER_IMAGE_LEGACY = "nvuillam/mega-linter"
