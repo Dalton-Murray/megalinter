@@ -64,7 +64,6 @@ linters:
     descriptor_flavors:
       - all
       - security
-      - ci-custom
     ignore_for_flavor_suggestions: true
     linter_text: |
       If you need to ignore folders,files or file extensions, use glob expressions `Glob` property of local `.devskim.json` file

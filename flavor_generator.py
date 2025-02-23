@@ -11,10 +11,10 @@ from typing import List
 from ruamel.yaml import YAML
 
 # Default values
-DEFAULT_NEW_FLAVOR = "devops_light"
-DEFAULT_NEW_FLAVOR_DESCRIPTION = "Optimized for DevOps pipelines workflows"
+DEFAULT_NEW_FLAVOR = "ci-custom"
+DEFAULT_NEW_FLAVOR_DESCRIPTION = "CI custom flavor"
 DEFAULT_COMPONENTS = [
-    ""
+    "bash-exec", "pylint", "black", "bandit", "sqlfluff", "jsonlint", "xmllint", "git_diff", "gitleaks", "secretlint", "semgrep", "trufflehog"
 ]
 
 # Paths

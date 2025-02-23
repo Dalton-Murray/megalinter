@@ -10,7 +10,8 @@ linters:
   - linter_name: sqlfluff
     linter_url: https://www.sqlfluff.com/
     linter_repo: https://github.com/sqlfluff/sqlfluff
-    linter_banner_image_url: https://raw.githubusercontent.com/sqlfluff/sqlfluff/main/images/sqlfluff-wide.png
+    linter_banner_image_url: 
+      https://raw.githubusercontent.com/sqlfluff/sqlfluff/main/images/sqlfluff-wide.png
     linter_image_url: https://docs.sqlfluff.com/en/stable/_static/images/sqlfluff-lrg.png
     linter_rules_url: https://docs.sqlfluff.com/en/stable/rules.html
     linter_rules_configuration_url: https://docs.sqlfluff.com/en/stable/configuration/index.html
@@ -36,6 +37,8 @@ linters:
       pip:
         - sqlfluff==${PIP_SQLFLUFF_VERSION}
   # TSQL
+    descriptor_flavors:
+      - ci-custom
   - linter_name: tsqllint
     disabled: false
     descriptor_flavors:
@@ -43,7 +46,8 @@ linters:
       - dotnetweb
     linter_url: https://github.com/tsqllint/tsqllint
     linter_repo: https://github.com/tsqllint/tsqllint
-    linter_image_url: https://tsqllint.gallerycdn.vsassets.io/extensions/tsqllint/tsqllint/1.2.0/1528922982751/Microsoft.VisualStudio.Services.Icons.Default
+    linter_image_url: 
+      https://tsqllint.gallerycdn.vsassets.io/extensions/tsqllint/tsqllint/1.2.0/1528922982751/Microsoft.VisualStudio.Services.Icons.Default
     linter_rules_url: https://github.com/tsqllint/tsqllint#rule-configuration
     linter_rules_configuration_url: https://github.com/tsqllint/tsqllint#rule-configuration
     linter_rules_inline_disable_url: https://github.com/tsqllint/tsqllint#disabling-rules-with-inline-comments
@@ -67,7 +71,8 @@ linters:
           ARG SQL_TSQLLINT_VERSION=1.16.0
         - RUN apk add --no-cache dotnet9-sdk
         - ENV PATH="${PATH}:/root/.dotnet/tools"
-        - RUN dotnet tool install --allow-roll-forward --global TSQLLint --version ${SQL_TSQLLINT_VERSION}
+        - RUN dotnet tool install --allow-roll-forward --global TSQLLint --version
+          ${SQL_TSQLLINT_VERSION}
     ide:
       vscode:
         - name: TSQL Lint

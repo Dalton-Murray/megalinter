@@ -57,8 +57,7 @@ linters:
         - name: vscode-markdownlint
           url: https://marketplace.visualstudio.com/items/DavidAnson.vscode-markdownlint
   # remark-lint
-    descriptor_flavors:
-      - ci-custom
+    descriptor_flavors: []
   - linter_name: remark-lint
     disabled: true
     disabled_reason: "Bug in remark-lint: https://github.com/remarkjs/remark-lint/issues/322"
@@ -140,8 +139,7 @@ linters:
       npm:
         - markdown-link-check@${NPM_MARKDOWN_LINK_CHECK_VERSION}
   # Markdown table formatter
-    descriptor_flavors:
-      - ci-custom
+    descriptor_flavors: []
   - linter_name: markdown-table-formatter
     is_formatter: true
     linter_text: |
@@ -169,5 +167,4 @@ linters:
       vscode:
         - name: Markdown Table Prettify Extension
           url: https://github.com/darkriszty/MarkdownTablePrettify-VSCodeExt
-    descriptor_flavors:
-      - ci-custom
+    descriptor_flavors: []

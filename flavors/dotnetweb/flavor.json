@@ -59,7 +59,6 @@
         "SPELL_PROSELINT",
         "SPELL_VALE",
         "SPELL_LYCHEE",
-        "SQL_SQLFLUFF",
         "SQL_TSQLLINT",
         "TEKTON_TEKTON_LINT",
         "TSX_ESLINT",
