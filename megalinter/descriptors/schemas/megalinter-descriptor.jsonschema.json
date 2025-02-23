@@ -42,6 +42,7 @@
         "all_flavors",
         "all",
         "c_cpp",
+        "ci-custom",
         "ci_light",
         "cupcake",
         "documentation",

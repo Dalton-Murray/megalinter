@@ -19,7 +19,8 @@ linters:
         description: If set to `true`, it will reformat and reindent the output
       - name: XML_XMLLINT_INDENT
         default_value: "  "
-        description: The number of indentation spaces when `XML_XMLLINT_AUTOFORMAT` is `true`
+        description: The number of indentation spaces when `XML_XMLLINT_AUTOFORMAT`
+          is `true`
     linter_url: https://gitlab.gnome.org/GNOME/libxml2/-/wikis/home
     linter_rules_configuration_url: https://gnome.pages.gitlab.gnome.org/libxml2/xmllint.html
     version_extract_regex: "(?<=libxml version )\\d+(\\d+)+"
@@ -36,3 +37,5 @@ linters:
         - libxml2-dev
         - libxml2-utils
         - libgcc
+    descriptor_flavors:
+      - ci-custom

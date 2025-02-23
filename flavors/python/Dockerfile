@@ -16,8 +16,6 @@
 ARG ACTION_ACTIONLINT_VERSION=1.7.7
 # renovate: datasource=docker depName=koalaman/shellcheck
 ARG BASH_SHELLCHECK_VERSION=v0.10.0
-# renovate: datasource=docker depName=rhysd/actionlint
-ARG BASH_SHFMT_VERSION=v3.10.0-alpine
 # renovate: datasource=docker depName=hadolint/hadolint
 ARG DOCKERFILE_HADOLINT_VERSION=v2.12.0-alpine
 # renovate: datasource=docker depName=mstruebing/editorconfig-checker
@@ -45,7 +43,6 @@ FROM rhysd/actionlint:${ACTION_ACTIONLINT_VERSION} AS actionlint
 FROM koalaman/shellcheck:${BASH_SHELLCHECK_VERSION} AS shellcheck
 # Next FROM line commented because already managed by another linter
 # FROM koalaman/shellcheck:${BASH_SHELLCHECK_VERSION} AS shellcheck
-FROM mvdan/shfmt:${BASH_SHFMT_VERSION} AS shfmt
 FROM hadolint/hadolint:${DOCKERFILE_HADOLINT_VERSION} AS hadolint
 FROM mstruebing/editorconfig-checker:${EDITORCONFIG_EDITORCONFIG_CHECKER_VERSION} AS editorconfig-checker
 FROM ghcr.io/yannh/kubeconform:${KUBERNETES_KUBECONFORM_VERSION} AS kubeconform
@@ -113,12 +110,6 @@ ARG NPM_GROOVY_LINT_VERSION=15.0.2
 ARG PIP_DJLINT_VERSION=1.36.4
 # renovate: datasource=npm depName=htmlhint
 ARG NPM_HTMLHINT_VERSION=1.1.4
-# renovate: datasource=npm depName=@prantlf/jsonlint
-ARG NPM_PRANTLF_JSONLINT_VERSION=16.0.0
-# renovate: datasource=npm depName=v8r
-ARG NPM_V8R_VERSION=4.2.1
-# renovate: datasource=npm depName=prettier
-ARG NPM_PRETTIER_VERSION=3.5.1
 # renovate: datasource=github-tags depName=pinterest/ktlint
 ARG KTLINT_VERSION=1.5.0
 
@@ -127,38 +118,14 @@ ARG DETEKT_VERSION=1.23.7
 
 # renovate: datasource=github-tags depName=kubescape/kubescape
 ARG KUBERNETES_KUBESCAPE_VERSION=3.0.28
-# renovate: datasource=npm depName=markdownlint-cli
-ARG NPM_MARKDOWNLINT_CLI_VERSION=0.44.0
-# renovate: datasource=npm depName=markdown-link-check
-ARG NPM_MARKDOWN_LINK_CHECK_VERSION=3.12.2
-# renovate: datasource=npm depName=markdown-table-formatter
-ARG NPM_MARKDOWN_TABLE_FORMATTER_VERSION=1.6.1
-# renovate: datasource=pypi depName=pylint
-ARG PIP_PYLINT_VERSION=3.3.4
-# renovate: datasource=pypi depName=typing-extensions
-ARG PIP_TYPING_EXTENSIONS_VERSION=4.12.2
-# renovate: datasource=pypi depName=black
-ARG PIP_BLACK_VERSION=25.1.0
-# renovate: datasource=pypi depName=flake8
-ARG PIP_FLAKE8_VERSION=7.1.2
-# renovate: datasource=pypi depName=isort
-ARG PIP_ISORT_VERSION=6.0.0
 # renovate: datasource=pypi depName=bandit
 ARG PIP_BANDIT_VERSION=1.8.3
 # renovate: datasource=pypi depName=bandit_sarif_formatter
 ARG PIP_BANDIT_SARIF_FORMATTER_VERSION=1.1.1
-# renovate: datasource=pypi depName=mypy
-ARG PIP_MYPY_VERSION=1.15.0
-# renovate: datasource=npm depName=pyright
-ARG NPM_PYRIGHT_VERSION=1.1.394
-# renovate: datasource=pypi depName=ruff
-ARG PIP_RUFF_VERSION=0.9.7
 # renovate: datasource=pypi depName=checkov
 ARG PIP_CHECKOV_VERSION=3.2.370
 # renovate: datasource=github-tags depName=anchore/grype
 ARG REPOSITORY_GRYPE_VERSION=0.87.0
-# renovate: datasource=npm depName=@ls-lint/ls-lint
-ARG NPM_LS_LINT_LS_LINT_VERSION=2.2.3
 # renovate: datasource=npm depName=secretlint
 ARG NPM_SECRETLINT_VERSION=9.0.0
 # renovate: datasource=npm depName=@secretlint/secretlint-rule-preset-recommend
@@ -189,8 +156,6 @@ ARG PIP_PROSELINT_VERSION=0.14.0
 ARG PIP_SQLFLUFF_VERSION=3.3.1
 # renovate: datasource=npm depName=@ibm/tekton-lint
 ARG NPM_IBM_TEKTON_LINT_VERSION=1.1.0
-# renovate: datasource=pypi depName=yamllint
-ARG PIP_YAMLLINT_VERSION=1.35.1
 # renovate: datasource=pypi depName=pip
 ARG PIP_PIP_VERSION=25.0.1
 # renovate: datasource=pypi depName=virtualenv
@@ -200,7 +165,6 @@ ARG RUST_RUST_VERSION=1.84.1
 
 ARG ACTION_ACTIONLINT_VERSION
 ARG BASH_SHELLCHECK_VERSION
-ARG BASH_SHFMT_VERSION
 ARG DOCKERFILE_HADOLINT_VERSION
 ARG EDITORCONFIG_EDITORCONFIG_CHECKER_VERSION
 ARG KUBERNETES_KUBECONFORM_VERSION
@@ -238,9 +202,6 @@ RUN apk add --no-cache \
                 helm \
                 gcompat \
                 libstdc++ \
-                libxml2-dev \
-                libxml2-utils \
-                libgcc \
                 npm \
                 nodejs-current \
                 yarn \
@@ -283,14 +244,7 @@ RUN PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir pip==${PIP_PIP_VERSION
     && mkdir -p "/venvs/cpplint" && cd "/venvs/cpplint" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir cpplint==${PIP_CPPLINT_VERSION} && deactivate && cd ./../.. \
     && mkdir -p "/venvs/stylelint" && cd "/venvs/stylelint" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir cpplint==${PIP_CPPLINT_VERSION} && deactivate && cd ./../.. \
     && mkdir -p "/venvs/djlint" && cd "/venvs/djlint" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir djlint==${PIP_DJLINT_VERSION} && deactivate && cd ./../.. \
-    && mkdir -p "/venvs/pylint" && cd "/venvs/pylint" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir pylint==${PIP_PYLINT_VERSION} typing-extensions==${PIP_TYPING_EXTENSIONS_VERSION} && deactivate && cd ./../.. \
-    && mkdir -p "/venvs/black" && cd "/venvs/black" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir black==${PIP_BLACK_VERSION} && deactivate && cd ./../.. \
-    && mkdir -p "/venvs/flake8" && cd "/venvs/flake8" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir flake8==${PIP_FLAKE8_VERSION} && deactivate && cd ./../.. \
-    && mkdir -p "/venvs/isort" && cd "/venvs/isort" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir black==${PIP_BLACK_VERSION} isort==${PIP_ISORT_VERSION} && deactivate && cd ./../.. \
     && mkdir -p "/venvs/bandit" && cd "/venvs/bandit" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir bandit==${PIP_BANDIT_VERSION} bandit_sarif_formatter==${PIP_BANDIT_SARIF_FORMATTER_VERSION} bandit[toml]==${PIP_BANDIT_VERSION} && deactivate && cd ./../.. \
-    && mkdir -p "/venvs/mypy" && cd "/venvs/mypy" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir mypy==${PIP_MYPY_VERSION} && deactivate && cd ./../.. \
-    && mkdir -p "/venvs/ruff" && cd "/venvs/ruff" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir ruff==${PIP_RUFF_VERSION} && deactivate && cd ./../.. \
-    && mkdir -p "/venvs/ruff-format" && cd "/venvs/ruff-format" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir ruff==${PIP_RUFF_VERSION} && deactivate && cd ./../.. \
     && mkdir -p "/venvs/checkov" && cd "/venvs/checkov" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir checkov==${PIP_CHECKOV_VERSION} && deactivate && cd ./../.. \
     && mkdir -p "/venvs/semgrep" && cd "/venvs/semgrep" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir semgrep==${PIP_SEMGREP_VERSION} && deactivate && cd ./../.. \
     && mkdir -p "/venvs/rst-lint" && cd "/venvs/rst-lint" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir Pygments==${PIP_PYGMENTS_VERSION} restructuredtext_lint==${PIP_RESTRUCTUREDTEXT_LINT_VERSION} && deactivate && cd ./../.. \
@@ -298,11 +252,10 @@ RUN PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir pip==${PIP_PIP_VERSION
     && mkdir -p "/venvs/rstfmt" && cd "/venvs/rstfmt" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir rstfmt==${PIP_RSTFMT_VERSION} && deactivate && cd ./../.. \
     && mkdir -p "/venvs/snakefmt" && cd "/venvs/snakefmt" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir snakefmt==${PIP_SNAKEFMT_VERSION} && deactivate && cd ./../.. \
     && mkdir -p "/venvs/proselint" && cd "/venvs/proselint" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir proselint==${PIP_PROSELINT_VERSION} && deactivate && cd ./../.. \
-    && mkdir -p "/venvs/sqlfluff" && cd "/venvs/sqlfluff" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir sqlfluff==${PIP_SQLFLUFF_VERSION} && deactivate && cd ./../.. \
-    && mkdir -p "/venvs/yamllint" && cd "/venvs/yamllint" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir yamllint==${PIP_YAMLLINT_VERSION} && deactivate && cd ./../..  \
+    && mkdir -p "/venvs/sqlfluff" && cd "/venvs/sqlfluff" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir sqlfluff==${PIP_SQLFLUFF_VERSION} && deactivate && cd ./../..  \
     && find /venvs \( -type f \( -iname \*.pyc -o -iname \*.pyo \) -o -type d -iname __pycache__ \) -delete \
     && rm -rf /root/.cache
-ENV PATH="${PATH}":/venvs/ansible-lint/bin:/venvs/cpplint/bin:/venvs/stylelint/bin:/venvs/djlint/bin:/venvs/pylint/bin:/venvs/black/bin:/venvs/flake8/bin:/venvs/isort/bin:/venvs/bandit/bin:/venvs/mypy/bin:/venvs/ruff/bin:/venvs/ruff-format/bin:/venvs/checkov/bin:/venvs/semgrep/bin:/venvs/rst-lint/bin:/venvs/rstcheck/bin:/venvs/rstfmt/bin:/venvs/snakefmt/bin:/venvs/proselint/bin:/venvs/sqlfluff/bin:/venvs/yamllint/bin
+ENV PATH="${PATH}":/venvs/ansible-lint/bin:/venvs/cpplint/bin:/venvs/stylelint/bin:/venvs/djlint/bin:/venvs/bandit/bin:/venvs/checkov/bin:/venvs/semgrep/bin:/venvs/rst-lint/bin:/venvs/rstcheck/bin:/venvs/rstfmt/bin:/venvs/snakefmt/bin:/venvs/proselint/bin:/venvs/sqlfluff/bin
 #PIPVENV__END
 
 ############################
@@ -326,14 +279,6 @@ RUN npm --no-cache install --ignore-scripts --omit=dev \
                 graphql-schema-linter@${NPM_GRAPHQL_SCHEMA_LINTER_VERSION} \
                 npm-groovy-lint@${NPM_GROOVY_LINT_VERSION} \
                 htmlhint@${NPM_HTMLHINT_VERSION} \
-                @prantlf/jsonlint@${NPM_PRANTLF_JSONLINT_VERSION} \
-                v8r@${NPM_V8R_VERSION} \
-                prettier@${NPM_PRETTIER_VERSION} \
-                markdownlint-cli@${NPM_MARKDOWNLINT_CLI_VERSION} \
-                markdown-link-check@${NPM_MARKDOWN_LINK_CHECK_VERSION} \
-                markdown-table-formatter@${NPM_MARKDOWN_TABLE_FORMATTER_VERSION} \
-                pyright@${NPM_PYRIGHT_VERSION} \
-                @ls-lint/ls-lint@${NPM_LS_LINT_LS_LINT_VERSION} \
                 secretlint@${NPM_SECRETLINT_VERSION} \
                 @secretlint/secretlint-rule-preset-recommend@${NPM_SECRETLINT_SECRETLINT_RULE_PRESET_RECOMMEND_VERSION} \
                 @secretlint/secretlint-formatter-sarif@${NPM_SECRETLINT_SECRETLINT_FORMATTER_SARIF_VERSION} \
@@ -375,7 +320,6 @@ COPY --link --from=actionlint /usr/local/bin/actionlint /usr/bin/actionlint
 COPY --link --from=shellcheck /bin/shellcheck /usr/bin/shellcheck
 # Next COPY line commented because already managed by another linter
 # COPY --link --from=shellcheck /bin/shellcheck /usr/bin/shellcheck
-COPY --link --from=shfmt /bin/shfmt /usr/bin/
 COPY --link --from=hadolint /bin/hadolint /usr/bin/hadolint
 COPY --link --from=editorconfig-checker /usr/bin/ec /usr/bin/editorconfig-checker
 COPY --link --from=kubeconform /kubeconform /usr/bin/
@@ -411,9 +355,6 @@ RUN printf '#!/bin/bash \n\nif [[ -x "$1" ]]; then exit 0; else echo "Error: Fil
 # Managed with # Next COPY line commented because already managed by another linter
 #              # COPY --link --from=shellcheck /bin/shellcheck /usr/bin/shellcheck
 #
-# shfmt installation
-# Managed with COPY --link --from=shfmt /bin/shfmt /usr/bin/
-#
 # cpplint installation
 #
 # jscpd installation
@@ -440,12 +381,6 @@ ENV JAVA_HOME_17=/usr/lib/jvm/java-17-openjdk
 #
 # htmlhint installation
 #
-# jsonlint installation
-#
-# v8r installation
-#
-# prettier installation
-#
 # ktlint installation
 RUN curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/releases/download/${KTLINT_VERSION}/ktlint && \
     chmod a+x ktlint && \
@@ -464,35 +399,12 @@ RUN curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/rel
 #
 # kubescape installation
     && ln -s /lib/libc.so.6 /usr/lib/libresolv.so.2 && \
-    curl --retry 5 --retry-delay 5 -sLv https://raw.githubusercontent.com/kubescape/kubescape/master/install.sh | /bin/bash -s -- -v "v${KUBERNETES_KUBESCAPE_VERSION}"
-#
-# markdownlint installation
-#
-# markdown-link-check installation
-#
-# markdown-table-formatter installation
+    curl --retry 5 --retry-delay 5 -sLv https://raw.githubusercontent.com/kubescape/kubescape/master/install.sh | /bin/bash -s -- -v "v${KUBERNETES_KUBESCAPE_VERSION}" \
 #
 # protolint installation
 # Managed with COPY --link --from=protolint /usr/local/bin/protolint /usr/bin/
 #
-# pylint installation
-#
-# black installation
-#
-# flake8 installation
-#
-# isort installation
-#
 # bandit installation
-#
-# mypy installation
-ENV MYPY_CACHE_DIR=/tmp
-#
-# pyright installation
-#
-# ruff installation
-#
-# ruff-format installation
 #
 # checkov installation
 #
@@ -500,9 +412,7 @@ ENV MYPY_CACHE_DIR=/tmp
 # Managed with COPY --link --from=gitleaks /usr/bin/gitleaks /usr/bin/
 #
 # grype installation
-RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/refs/tags/v${REPOSITORY_GRYPE_VERSION}/install.sh | sh -s -- -b /usr/local/bin \
-#
-# ls-lint installation
+    && curl -sSfL https://raw.githubusercontent.com/anchore/grype/refs/tags/v${REPOSITORY_GRYPE_VERSION}/install.sh | sh -s -- -b /usr/local/bin \
 #
 # secretlint installation
 #
@@ -541,12 +451,6 @@ RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/refs/tags/v${REPO
 # sqlfluff installation
 #
 # tekton-lint installation
-#
-# prettier installation
-#
-# yamllint installation
-#
-# v8r installation
 #
 #OTHER__END
 

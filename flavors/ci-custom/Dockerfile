@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# MEGALINTER FLAVOR [java]: Optimized for JAVA based projects
+# MEGALINTER FLAVOR [ci-custom]: Custom flavor for CI
 ###########################################
 ###########################################
 ## Dockerfile to run MegaLinter ##
@@ -82,19 +82,12 @@ FROM python:3.12.8-alpine3.21
 #ARG__START
 # renovate: datasource=crate depName=sarif-fmt
 ARG CARGO_SARIF_FMT_VERSION=0.7.0
-# renovate: datasource=github-tags depName=sgerrand/alpine-pkg-glibc
-ARG ALPINE_GLIBC_PACKAGE_VERSION=2.34-r0
 # renovate: datasource=pypi depName=ansible-lint
 ARG PIP_ANSIBLE_LINT_VERSION=25.1.2
 # renovate: datasource=npm depName=@stoplight/spectral-cli
 ARG NPM_SPECTRAL_CLI_VERSION=6.14.2
 # renovate: datasource=crate depName=shellcheck-sarif
 ARG CARGO_SHELLCHECK_SARIF_VERSION=0.7.0
-# renovate: datasource=github-tags depName=clj-kondo/clj-kondo
-ARG CLJ_KONDO_VERSION=2025.01.16
-
-# renovate: datasource=github-tags depName=greglook/cljstyle
-ARG CLJ_STYLE_VERSION=0.17.642
 # renovate: datasource=npm depName=jscpd
 ARG NPM_JSCPD_VERSION=4.0.5
 # renovate: datasource=npm depName=stylelint
@@ -117,9 +110,8 @@ ARG NPM_GROOVY_LINT_VERSION=15.0.2
 ARG PIP_DJLINT_VERSION=1.36.4
 # renovate: datasource=npm depName=htmlhint
 ARG NPM_HTMLHINT_VERSION=1.1.4
-# renovate: datasource=github-tags depName=pmd/pmd extractVersion=^pmd_releases/(?<version>.*)$
-ARG PMD_VERSION=7.10.0
-
+# renovate: datasource=npm depName=@prantlf/jsonlint
+ARG NPM_PRANTLF_JSONLINT_VERSION=16.0.0
 # renovate: datasource=github-tags depName=pinterest/ktlint
 ARG KTLINT_VERSION=1.5.0
 
@@ -128,8 +120,26 @@ ARG DETEKT_VERSION=1.23.7
 
 # renovate: datasource=github-tags depName=kubescape/kubescape
 ARG KUBERNETES_KUBESCAPE_VERSION=3.0.28
+# renovate: datasource=npm depName=markdownlint-cli
+ARG NPM_MARKDOWNLINT_CLI_VERSION=0.44.0
+# renovate: datasource=npm depName=markdown-link-check
+ARG NPM_MARKDOWN_LINK_CHECK_VERSION=3.12.2
+# renovate: datasource=npm depName=markdown-table-formatter
+ARG NPM_MARKDOWN_TABLE_FORMATTER_VERSION=1.6.1
+# renovate: datasource=pypi depName=pylint
+ARG PIP_PYLINT_VERSION=3.3.4
+# renovate: datasource=pypi depName=typing-extensions
+ARG PIP_TYPING_EXTENSIONS_VERSION=4.12.2
+# renovate: datasource=pypi depName=black
+ARG PIP_BLACK_VERSION=25.1.0
+# renovate: datasource=pypi depName=bandit
+ARG PIP_BANDIT_VERSION=1.8.3
+# renovate: datasource=pypi depName=bandit_sarif_formatter
+ARG PIP_BANDIT_SARIF_FORMATTER_VERSION=1.1.1
 # renovate: datasource=pypi depName=checkov
 ARG PIP_CHECKOV_VERSION=3.2.370
+# renovate: datasource=nuget depName=Microsoft.CST.DevSkim.CLI
+ARG REPOSITORY_DEVSKIM_VERSION=1.0.52
 # renovate: datasource=github-tags depName=anchore/grype
 ARG REPOSITORY_GRYPE_VERSION=0.87.0
 # renovate: datasource=npm depName=secretlint
@@ -154,6 +164,8 @@ ARG PIP_PROSELINT_VERSION=0.14.0
 ARG PIP_SQLFLUFF_VERSION=3.3.1
 # renovate: datasource=npm depName=@ibm/tekton-lint
 ARG NPM_IBM_TEKTON_LINT_VERSION=1.1.0
+# renovate: datasource=pypi depName=yamllint
+ARG PIP_YAMLLINT_VERSION=1.35.1
 # renovate: datasource=pypi depName=pip
 ARG PIP_PIP_VERSION=25.0.1
 # renovate: datasource=pypi depName=virtualenv
@@ -200,6 +212,9 @@ RUN apk add --no-cache \
                 helm \
                 gcompat \
                 libstdc++ \
+                libxml2-dev \
+                libxml2-utils \
+                libgcc \
                 npm \
                 nodejs-current \
                 yarn \
@@ -241,14 +256,18 @@ RUN PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir pip==${PIP_PIP_VERSION
     && mkdir -p "/venvs/ansible-lint" && cd "/venvs/ansible-lint" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir ansible-lint==${PIP_ANSIBLE_LINT_VERSION} && deactivate && cd ./../.. \
     && mkdir -p "/venvs/stylelint" && cd "/venvs/stylelint" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir cpplint==${PIP_CPPLINT_VERSION} && deactivate && cd ./../.. \
     && mkdir -p "/venvs/djlint" && cd "/venvs/djlint" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir djlint==${PIP_DJLINT_VERSION} && deactivate && cd ./../.. \
+    && mkdir -p "/venvs/pylint" && cd "/venvs/pylint" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir pylint==${PIP_PYLINT_VERSION} typing-extensions==${PIP_TYPING_EXTENSIONS_VERSION} && deactivate && cd ./../.. \
+    && mkdir -p "/venvs/black" && cd "/venvs/black" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir black==${PIP_BLACK_VERSION} && deactivate && cd ./../.. \
+    && mkdir -p "/venvs/bandit" && cd "/venvs/bandit" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir bandit==${PIP_BANDIT_VERSION} bandit_sarif_formatter==${PIP_BANDIT_SARIF_FORMATTER_VERSION} bandit[toml]==${PIP_BANDIT_VERSION} && deactivate && cd ./../.. \
     && mkdir -p "/venvs/checkov" && cd "/venvs/checkov" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir checkov==${PIP_CHECKOV_VERSION} && deactivate && cd ./../.. \
     && mkdir -p "/venvs/semgrep" && cd "/venvs/semgrep" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir semgrep==${PIP_SEMGREP_VERSION} && deactivate && cd ./../.. \
     && mkdir -p "/venvs/snakefmt" && cd "/venvs/snakefmt" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir snakefmt==${PIP_SNAKEFMT_VERSION} && deactivate && cd ./../.. \
     && mkdir -p "/venvs/proselint" && cd "/venvs/proselint" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir proselint==${PIP_PROSELINT_VERSION} && deactivate && cd ./../.. \
-    && mkdir -p "/venvs/sqlfluff" && cd "/venvs/sqlfluff" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir sqlfluff==${PIP_SQLFLUFF_VERSION} && deactivate && cd ./../..  \
+    && mkdir -p "/venvs/sqlfluff" && cd "/venvs/sqlfluff" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir sqlfluff==${PIP_SQLFLUFF_VERSION} && deactivate && cd ./../.. \
+    && mkdir -p "/venvs/yamllint" && cd "/venvs/yamllint" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir yamllint==${PIP_YAMLLINT_VERSION} && deactivate && cd ./../..  \
     && find /venvs \( -type f \( -iname \*.pyc -o -iname \*.pyo \) -o -type d -iname __pycache__ \) -delete \
     && rm -rf /root/.cache
-ENV PATH="${PATH}":/venvs/ansible-lint/bin:/venvs/stylelint/bin:/venvs/djlint/bin:/venvs/checkov/bin:/venvs/semgrep/bin:/venvs/snakefmt/bin:/venvs/proselint/bin:/venvs/sqlfluff/bin
+ENV PATH="${PATH}":/venvs/ansible-lint/bin:/venvs/stylelint/bin:/venvs/djlint/bin:/venvs/pylint/bin:/venvs/black/bin:/venvs/bandit/bin:/venvs/checkov/bin:/venvs/semgrep/bin:/venvs/snakefmt/bin:/venvs/proselint/bin:/venvs/sqlfluff/bin:/venvs/yamllint/bin
 #PIPVENV__END
 
 ############################
@@ -272,6 +291,10 @@ RUN npm --no-cache install --ignore-scripts --omit=dev \
                 graphql-schema-linter@${NPM_GRAPHQL_SCHEMA_LINTER_VERSION} \
                 npm-groovy-lint@${NPM_GROOVY_LINT_VERSION} \
                 htmlhint@${NPM_HTMLHINT_VERSION} \
+                @prantlf/jsonlint@${NPM_PRANTLF_JSONLINT_VERSION} \
+                markdownlint-cli@${NPM_MARKDOWNLINT_CLI_VERSION} \
+                markdown-link-check@${NPM_MARKDOWN_LINK_CHECK_VERSION} \
+                markdown-table-formatter@${NPM_MARKDOWN_TABLE_FORMATTER_VERSION} \
                 secretlint@${NPM_SECRETLINT_VERSION} \
                 @secretlint/secretlint-rule-preset-recommend@${NPM_SECRETLINT_SECRETLINT_RULE_PRESET_RECOMMEND_VERSION} \
                 @secretlint/secretlint-formatter-sarif@${NPM_SECRETLINT_SECRETLINT_FORMATTER_SARIF_VERSION} \
@@ -327,57 +350,9 @@ COPY --link --from=lychee /usr/local/bin/lychee /usr/bin/
 ## @generated by .automation/build.py using descriptor files, please do not update manually ##
 #############################################################################################
 #OTHER__START
-# CLOJURE installation
-ENV LANG=C.UTF-8
-RUN ALPINE_GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases/download" && \
-    ALPINE_GLIBC_BASE_PACKAGE_FILENAME="glibc-$ALPINE_GLIBC_PACKAGE_VERSION.apk" && \
-    ALPINE_GLIBC_BIN_PACKAGE_FILENAME="glibc-bin-$ALPINE_GLIBC_PACKAGE_VERSION.apk" && \
-    ALPINE_GLIBC_I18N_PACKAGE_FILENAME="glibc-i18n-$ALPINE_GLIBC_PACKAGE_VERSION.apk" && \
-    apk add --no-cache --virtual=.build-dependencies wget ca-certificates && \
-    echo \
-        "-----BEGIN PUBLIC KEY-----\
-        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApZ2u1KJKUu/fW4A25y9m\
-        y70AGEa/J3Wi5ibNVGNn1gT1r0VfgeWd0pUybS4UmcHdiNzxJPgoWQhV2SSW1JYu\
-        tOqKZF5QSN6X937PTUpNBjUvLtTQ1ve1fp39uf/lEXPpFpOPL88LKnDBgbh7wkCp\
-        m2KzLVGChf83MS0ShL6G9EQIAUxLm99VpgRjwqTQ/KfzGtpke1wqws4au0Ab4qPY\
-        KXvMLSPLUp7cfulWvhmZSegr5AdhNw5KNizPqCJT8ZrGvgHypXyiFvvAH5YRtSsc\
-        Zvo9GI2e2MaZyo9/lvb+LbLEJZKEQckqRj4P26gmASrZEPStwc+yqy1ShHLA0j6m\
-        1QIDAQAB\
-        -----END PUBLIC KEY-----" | sed 's/   */\n/g' > "/etc/apk/keys/sgerrand.rsa.pub" && \
-    wget --quiet --tries=10 --waitretry=10 \
-        "$ALPINE_GLIBC_BASE_URL/$ALPINE_GLIBC_PACKAGE_VERSION/$ALPINE_GLIBC_BASE_PACKAGE_FILENAME" \
-        "$ALPINE_GLIBC_BASE_URL/$ALPINE_GLIBC_PACKAGE_VERSION/$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" \
-        "$ALPINE_GLIBC_BASE_URL/$ALPINE_GLIBC_PACKAGE_VERSION/$ALPINE_GLIBC_I18N_PACKAGE_FILENAME" && \
-    mv /etc/nsswitch.conf /etc/nsswitch.conf.bak && \
-    apk add --no-cache --force-overwrite \
-        "$ALPINE_GLIBC_BASE_PACKAGE_FILENAME" \
-        "$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" \
-        "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME" && \
-    \
-    mv /etc/nsswitch.conf.bak /etc/nsswitch.conf && \
-    rm "/etc/apk/keys/sgerrand.rsa.pub" && \
-    (/usr/glibc-compat/bin/localedef --force --inputfile POSIX --charmap UTF-8 "$LANG" || true) && \
-    echo "export LANG=$LANG" > /etc/profile.d/locale.sh && \
-    \
-    apk del glibc-i18n && \
-    \
-    rm "/root/.wget-hsts" && \
-    apk del .build-dependencies && \
-    rm \
-        "$ALPINE_GLIBC_BASE_PACKAGE_FILENAME" \
-        "$ALPINE_GLIBC_BIN_PACKAGE_FILENAME" \
-        "$ALPINE_GLIBC_I18N_PACKAGE_FILENAME"
-
-#
-# JAVA installation
+# KOTLIN installation
 ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk
 ENV PATH="$JAVA_HOME/bin:${PATH}"
-#
-# KOTLIN installation
-# Next line commented because already managed by another linter
-# ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk
-# Next line commented because already managed by another linter
-# ENV PATH="$JAVA_HOME/bin:${PATH}"
 #
 # actionlint installation
 # Managed with COPY --link --from=actionlint /usr/local/bin/actionlint /usr/bin/actionlint
@@ -395,16 +370,6 @@ RUN printf '#!/bin/bash \n\nif [[ -x "$1" ]]; then exit 0; else echo "Error: Fil
 # shellcheck installation
 # Managed with # Next COPY line commented because already managed by another linter
 #              # COPY --link --from=shellcheck /bin/shellcheck /usr/bin/shellcheck
-#
-# clj-kondo installation
-    && curl --retry 5 --retry-delay 5 -sLO https://raw.githubusercontent.com/clj-kondo/clj-kondo/refs/tags/v${CLJ_KONDO_VERSION}/script/install-clj-kondo \
-    && chmod +x install-clj-kondo \
-    && ./install-clj-kondo \
-#
-# cljstyle installation
-    && curl --retry 5 --retry-delay 5 -sLO https://raw.githubusercontent.com/greglook/cljstyle/main/util/install-cljstyle \
-    && chmod +x install-cljstyle \
-    && ./install-cljstyle --static --version "$CLJ_STYLE_VERSION" \
 #
 # jscpd installation
 #
@@ -428,27 +393,10 @@ ENV JAVA_HOME_17=/usr/lib/jvm/java-17-openjdk
 #
 # htmlhint installation
 #
-# checkstyle installation
-RUN --mount=type=secret,id=GITHUB_TOKEN CHECKSTYLE_LATEST=$(curl -s \
-    -H "Accept: application/vnd.github+json" \
-    -H "Authorization: Bearer $(cat /run/secrets/GITHUB_TOKEN)" \
-    https://api.github.com/repos/checkstyle/checkstyle/releases/latest \
-        | grep browser_download_url \
-        | grep ".jar" \
-        | cut -d '"' -f 4) \
-    && curl --retry 5 --retry-delay 5 -sSL $CHECKSTYLE_LATEST \
-        --output /usr/bin/checkstyle
-
-#
-# pmd installation
-RUN wget --quiet https://github.com/pmd/pmd/releases/download/pmd_releases%2F${PMD_VERSION}/pmd-dist-${PMD_VERSION}-bin.zip && \
-    unzip pmd-dist-${PMD_VERSION}-bin.zip || echo "Error unzipping" && \
-    rm pmd-dist-${PMD_VERSION}-bin.zip || echo "Error rm" && \
-    mv pmd-bin-${PMD_VERSION} /usr/bin/pmd || echo "Error mv" && \
-    chmod +x /usr/bin/pmd/bin/pmd || echo "Error chmod" \
+# jsonlint installation
 #
 # ktlint installation
-    && curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/releases/download/${KTLINT_VERSION}/ktlint && \
+RUN curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/releases/download/${KTLINT_VERSION}/ktlint && \
     chmod a+x ktlint && \
     mv "ktlint" /usr/bin/ \
 #
@@ -467,10 +415,27 @@ RUN wget --quiet https://github.com/pmd/pmd/releases/download/pmd_releases%2F${P
     && ln -s /lib/libc.so.6 /usr/lib/libresolv.so.2 && \
     curl --retry 5 --retry-delay 5 -sLv https://raw.githubusercontent.com/kubescape/kubescape/master/install.sh | /bin/bash -s -- -v "v${KUBERNETES_KUBESCAPE_VERSION}" \
 #
+# markdownlint installation
+#
+# markdown-link-check installation
+#
+# markdown-table-formatter installation
+#
 # protolint installation
 # Managed with COPY --link --from=protolint /usr/local/bin/protolint /usr/bin/
 #
+# pylint installation
+#
+# black installation
+#
+# bandit installation
+#
 # checkov installation
+#
+# devskim installation
+    && apk add --no-cache dotnet9-sdk
+ENV PATH="${PATH}:/root/.dotnet/tools"
+RUN dotnet tool install --allow-roll-forward --global Microsoft.CST.DevSkim.CLI --version ${REPOSITORY_DEVSKIM_VERSION} \
 #
 # gitleaks installation
 # Managed with COPY --link --from=gitleaks /usr/bin/gitleaks /usr/bin/
@@ -510,6 +475,8 @@ RUN wget --quiet https://github.com/pmd/pmd/releases/download/pmd_releases%2F${P
 #
 # tekton-lint installation
 #
+# yamllint installation
+#
 #OTHER__END
 
 ################################
@@ -545,7 +512,7 @@ ENV BUILD_DATE=$BUILD_DATE \
     BUILD_VERSION=$BUILD_VERSION
 
 #FLAVOR__START
-ENV MEGALINTER_FLAVOR=java
+ENV MEGALINTER_FLAVOR=ci-custom
 #FLAVOR__END
 
 #########################################

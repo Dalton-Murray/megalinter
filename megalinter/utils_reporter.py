@@ -96,7 +96,7 @@ def build_markdown_summary(reporter_self, action_run_url=""):
         + log_link(f"{reporter_self.master.status.upper()}", action_run_url)
     )
     p_r_msg = (
-        f"## [\U0001f999 MegaLinter]({ML_DOC_URL}) status: {status_with_href}"
+        f"## CI - Scanner Status: {status_with_href}"
         + os.linesep
         + os.linesep
     )
@@ -107,15 +107,14 @@ def build_markdown_summary(reporter_self, action_run_url=""):
 
     if action_run_url != "":
         p_r_msg += (
-            "See detailed report in [MegaLinter reports"
+            "See detailed report in [scanner reports"
             f"]({action_run_url})" + os.linesep
         )
     else:
-        p_r_msg += "See detailed report in MegaLinter reports" + os.linesep
+        p_r_msg += "See detailed report in scanner reports" + os.linesep
     if reporter_self.master.validate_all_code_base is False:
         p_r_msg += (
-            "_Set `VALIDATE_ALL_CODEBASE: true` in mega-linter.yml to validate "
-            + "all sources, not only the diff_"
+            ""
             + os.linesep
         )
     if reporter_self.master.flavor_suggestions is not None:
@@ -164,8 +163,7 @@ def build_markdown_summary(reporter_self, action_run_url=""):
     ):
         p_r_msg += (
             os.linesep
-            + "MegaLinter is graciously provided by [OX Security]"
-            + "(https://www.ox.security/?ref=megalinter)"
+            + ""
         )
     else:
         p_r_msg += os.linesep + OX_MARKDOWN_LINK

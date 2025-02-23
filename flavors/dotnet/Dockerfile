@@ -16,8 +16,6 @@
 ARG ACTION_ACTIONLINT_VERSION=1.7.7
 # renovate: datasource=docker depName=koalaman/shellcheck
 ARG BASH_SHELLCHECK_VERSION=v0.10.0
-# renovate: datasource=docker depName=rhysd/actionlint
-ARG BASH_SHFMT_VERSION=v3.10.0-alpine
 # renovate: datasource=docker depName=hadolint/hadolint
 ARG DOCKERFILE_HADOLINT_VERSION=v2.12.0-alpine
 # renovate: datasource=docker depName=mstruebing/editorconfig-checker
@@ -45,7 +43,6 @@ FROM rhysd/actionlint:${ACTION_ACTIONLINT_VERSION} AS actionlint
 FROM koalaman/shellcheck:${BASH_SHELLCHECK_VERSION} AS shellcheck
 # Next FROM line commented because already managed by another linter
 # FROM koalaman/shellcheck:${BASH_SHELLCHECK_VERSION} AS shellcheck
-FROM mvdan/shfmt:${BASH_SHFMT_VERSION} AS shfmt
 FROM hadolint/hadolint:${DOCKERFILE_HADOLINT_VERSION} AS hadolint
 FROM mstruebing/editorconfig-checker:${EDITORCONFIG_EDITORCONFIG_CHECKER_VERSION} AS editorconfig-checker
 FROM ghcr.io/yannh/kubeconform:${KUBERNETES_KUBECONFORM_VERSION} AS kubeconform
@@ -132,12 +129,6 @@ ARG NPM_GROOVY_LINT_VERSION=15.0.2
 ARG PIP_DJLINT_VERSION=1.36.4
 # renovate: datasource=npm depName=htmlhint
 ARG NPM_HTMLHINT_VERSION=1.1.4
-# renovate: datasource=npm depName=@prantlf/jsonlint
-ARG NPM_PRANTLF_JSONLINT_VERSION=16.0.0
-# renovate: datasource=npm depName=v8r
-ARG NPM_V8R_VERSION=4.2.1
-# renovate: datasource=npm depName=prettier
-ARG NPM_PRETTIER_VERSION=3.5.1
 # renovate: datasource=npm depName=npm-package-json-lint
 ARG NPM_PACKAGE_JSON_LINT_VERSION=8.0.0
 # renovate: datasource=npm depName=npm-package-json-lint-config-default
@@ -150,12 +141,6 @@ ARG DETEKT_VERSION=1.23.7
 
 # renovate: datasource=github-tags depName=kubescape/kubescape
 ARG KUBERNETES_KUBESCAPE_VERSION=3.0.28
-# renovate: datasource=npm depName=markdownlint-cli
-ARG NPM_MARKDOWNLINT_CLI_VERSION=0.44.0
-# renovate: datasource=npm depName=markdown-link-check
-ARG NPM_MARKDOWN_LINK_CHECK_VERSION=3.12.2
-# renovate: datasource=npm depName=markdown-table-formatter
-ARG NPM_MARKDOWN_TABLE_FORMATTER_VERSION=1.6.1
 # renovate: datasource=nuget depName=PSScriptAnalyzer registryUrl=https://www.powershellgallery.com/api/v2/
 ARG PSSA_VERSION='1.23.0'
 
@@ -163,8 +148,6 @@ ARG PSSA_VERSION='1.23.0'
 ARG PIP_CHECKOV_VERSION=3.2.370
 # renovate: datasource=github-tags depName=anchore/grype
 ARG REPOSITORY_GRYPE_VERSION=0.87.0
-# renovate: datasource=npm depName=@ls-lint/ls-lint
-ARG NPM_LS_LINT_LS_LINT_VERSION=2.2.3
 # renovate: datasource=npm depName=secretlint
 ARG NPM_SECRETLINT_VERSION=9.0.0
 # renovate: datasource=npm depName=@secretlint/secretlint-rule-preset-recommend
@@ -189,8 +172,6 @@ ARG PIP_SQLFLUFF_VERSION=3.3.1
 ARG SQL_TSQLLINT_VERSION=1.16.0
 # renovate: datasource=npm depName=@ibm/tekton-lint
 ARG NPM_IBM_TEKTON_LINT_VERSION=1.1.0
-# renovate: datasource=pypi depName=yamllint
-ARG PIP_YAMLLINT_VERSION=1.35.1
 # renovate: datasource=pypi depName=pip
 ARG PIP_PIP_VERSION=25.0.1
 # renovate: datasource=pypi depName=virtualenv
@@ -200,7 +181,6 @@ ARG RUST_RUST_VERSION=1.84.1
 
 ARG ACTION_ACTIONLINT_VERSION
 ARG BASH_SHELLCHECK_VERSION
-ARG BASH_SHFMT_VERSION
 ARG DOCKERFILE_HADOLINT_VERSION
 ARG EDITORCONFIG_EDITORCONFIG_CHECKER_VERSION
 ARG KUBERNETES_KUBECONFORM_VERSION
@@ -239,9 +219,6 @@ RUN apk add --no-cache \
                 helm \
                 gcompat \
                 libstdc++ \
-                libxml2-dev \
-                libxml2-utils \
-                libgcc \
                 npm \
                 nodejs-current \
                 yarn \
@@ -288,11 +265,10 @@ RUN PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir pip==${PIP_PIP_VERSION
     && mkdir -p "/venvs/semgrep" && cd "/venvs/semgrep" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir semgrep==${PIP_SEMGREP_VERSION} && deactivate && cd ./../.. \
     && mkdir -p "/venvs/snakefmt" && cd "/venvs/snakefmt" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir snakefmt==${PIP_SNAKEFMT_VERSION} && deactivate && cd ./../.. \
     && mkdir -p "/venvs/proselint" && cd "/venvs/proselint" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir proselint==${PIP_PROSELINT_VERSION} && deactivate && cd ./../.. \
-    && mkdir -p "/venvs/sqlfluff" && cd "/venvs/sqlfluff" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir sqlfluff==${PIP_SQLFLUFF_VERSION} && deactivate && cd ./../.. \
-    && mkdir -p "/venvs/yamllint" && cd "/venvs/yamllint" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir yamllint==${PIP_YAMLLINT_VERSION} && deactivate && cd ./../..  \
+    && mkdir -p "/venvs/sqlfluff" && cd "/venvs/sqlfluff" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir sqlfluff==${PIP_SQLFLUFF_VERSION} && deactivate && cd ./../..  \
     && find /venvs \( -type f \( -iname \*.pyc -o -iname \*.pyo \) -o -type d -iname __pycache__ \) -delete \
     && rm -rf /root/.cache
-ENV PATH="${PATH}":/venvs/ansible-lint/bin:/venvs/cpplint/bin:/venvs/stylelint/bin:/venvs/djlint/bin:/venvs/checkov/bin:/venvs/semgrep/bin:/venvs/snakefmt/bin:/venvs/proselint/bin:/venvs/sqlfluff/bin:/venvs/yamllint/bin
+ENV PATH="${PATH}":/venvs/ansible-lint/bin:/venvs/cpplint/bin:/venvs/stylelint/bin:/venvs/djlint/bin:/venvs/checkov/bin:/venvs/semgrep/bin:/venvs/snakefmt/bin:/venvs/proselint/bin:/venvs/sqlfluff/bin
 #PIPVENV__END
 
 ############################
@@ -317,15 +293,8 @@ RUN npm --no-cache install --ignore-scripts --omit=dev \
                 graphql-schema-linter@${NPM_GRAPHQL_SCHEMA_LINTER_VERSION} \
                 npm-groovy-lint@${NPM_GROOVY_LINT_VERSION} \
                 htmlhint@${NPM_HTMLHINT_VERSION} \
-                @prantlf/jsonlint@${NPM_PRANTLF_JSONLINT_VERSION} \
-                v8r@${NPM_V8R_VERSION} \
-                prettier@${NPM_PRETTIER_VERSION} \
                 npm-package-json-lint@${NPM_PACKAGE_JSON_LINT_VERSION} \
                 npm-package-json-lint-config-default@${NPM_PACKAGE_JSON_LINT_CONFIG_DEFAULT_VERSION} \
-                markdownlint-cli@${NPM_MARKDOWNLINT_CLI_VERSION} \
-                markdown-link-check@${NPM_MARKDOWN_LINK_CHECK_VERSION} \
-                markdown-table-formatter@${NPM_MARKDOWN_TABLE_FORMATTER_VERSION} \
-                @ls-lint/ls-lint@${NPM_LS_LINT_LS_LINT_VERSION} \
                 secretlint@${NPM_SECRETLINT_VERSION} \
                 @secretlint/secretlint-rule-preset-recommend@${NPM_SECRETLINT_SECRETLINT_RULE_PRESET_RECOMMEND_VERSION} \
                 @secretlint/secretlint-formatter-sarif@${NPM_SECRETLINT_SECRETLINT_FORMATTER_SARIF_VERSION} \
@@ -367,7 +336,6 @@ COPY --link --from=actionlint /usr/local/bin/actionlint /usr/bin/actionlint
 COPY --link --from=shellcheck /bin/shellcheck /usr/bin/shellcheck
 # Next COPY line commented because already managed by another linter
 # COPY --link --from=shellcheck /bin/shellcheck /usr/bin/shellcheck
-COPY --link --from=shfmt /bin/shfmt /usr/bin/
 COPY --link --from=hadolint /bin/hadolint /usr/bin/hadolint
 COPY --link --from=editorconfig-checker /usr/bin/ec /usr/bin/editorconfig-checker
 COPY --link --from=kubeconform /kubeconform /usr/bin/
@@ -436,9 +404,6 @@ RUN curl --retry 5 --retry-delay 5 -sLO "https://github.com/Azure/arm-ttk/releas
 # Managed with # Next COPY line commented because already managed by another linter
 #              # COPY --link --from=shellcheck /bin/shellcheck /usr/bin/shellcheck
 #
-# shfmt installation
-# Managed with COPY --link --from=shfmt /bin/shfmt /usr/bin/
-#
 # bicep_linter installation
     && curl --retry 5 --retry-delay 5 -sLo ${BICEP_EXE} "https://github.com/Azure/bicep/releases/download/v${BICEP_VERSION}/bicep-linux-musl-x64" \
     && chmod +x "${BICEP_EXE}" \
@@ -478,12 +443,6 @@ ENV JAVA_HOME_17=/usr/lib/jvm/java-17-openjdk
 #
 # htmlhint installation
 #
-# jsonlint installation
-#
-# v8r installation
-#
-# prettier installation
-#
 # npm-package-json-lint installation
 #
 # ktlint installation
@@ -506,12 +465,6 @@ RUN curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/rel
     && ln -s /lib/libc.so.6 /usr/lib/libresolv.so.2 && \
     curl --retry 5 --retry-delay 5 -sLv https://raw.githubusercontent.com/kubescape/kubescape/master/install.sh | /bin/bash -s -- -v "v${KUBERNETES_KUBESCAPE_VERSION}" \
 #
-# markdownlint installation
-#
-# markdown-link-check installation
-#
-# markdown-table-formatter installation
-#
 # powershell installation
     && pwsh -c 'Install-Module -Name PSScriptAnalyzer -RequiredVersion ${PSSA_VERSION} -Scope AllUsers -Force' \
 #
@@ -529,8 +482,6 @@ RUN curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/rel
 #
 # grype installation
     && curl -sSfL https://raw.githubusercontent.com/anchore/grype/refs/tags/v${REPOSITORY_GRYPE_VERSION}/install.sh | sh -s -- -b /usr/local/bin \
-#
-# ls-lint installation
 #
 # secretlint installation
 #
@@ -569,12 +520,6 @@ RUN curl --retry 5 --retry-delay 5 -sSLO https://github.com/pinterest/ktlint/rel
     && dotnet tool install --allow-roll-forward --global TSQLLint --version ${SQL_TSQLLINT_VERSION}
 #
 # tekton-lint installation
-#
-# prettier installation
-#
-# yamllint installation
-#
-# v8r installation
 #
 #OTHER__END
 

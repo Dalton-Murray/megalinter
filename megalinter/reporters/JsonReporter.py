@@ -100,7 +100,7 @@ class JsonReporter(Reporter):
         result_json = json.dumps(result_json_obj, sort_keys=True, indent=4)
         # Write output file
         json_file_name = f"{self.report_folder}{os.path.sep}" + config.get(
-            self.master.request_id, "JSON_REPORTER_FILE_NAME", "mega-linter-report.json"
+            self.master.request_id, "JSON_REPORTER_FILE_NAME", "scanner-report.json"
         )
         with open(json_file_name, "w", encoding="utf-8") as json_file:
             json_file.write(result_json)

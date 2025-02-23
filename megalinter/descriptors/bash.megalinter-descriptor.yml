@@ -6,6 +6,7 @@ descriptor_flavors:
   - cupcake
   - c_cpp
   - formatters
+  - ci-custom
 file_extensions:
   - ""
   - ".sh"
@@ -31,13 +32,15 @@ linters:
       Checks if shell files are executable
 
       Note: You can run `git add --chmod=+x myfile.sh` to make a file executable on Windows
-    linter_icon_png_url: https://raw.githubusercontent.com/oxsecurity/megalinter/main/docs/assets/icons/linters/bash-exec.png
+    linter_icon_png_url: 
+      https://raw.githubusercontent.com/oxsecurity/megalinter/main/docs/assets/icons/linters/bash-exec.png
     linter_megalinter_ref_url: never
     name: BASH_EXEC
     descriptor_flavors:
       - all_flavors
       - cupcake
       - security
+      - ci-custom
     cli_executable_help: bash
     cli_executable_version: bash
     cli_help_arg_name: "--help"
@@ -50,7 +53,9 @@ linters:
               && chmod +x /usr/bin/bash-exec
     variables:
       - name: ERROR_ON_MISSING_EXEC_BIT
-        description: If set to `false`, the `bash-exec` linter will report a warning if a shell script is not executable. If set to `true`, the `bash-exec` linter will report an error instead
+        description: If set to `false`, the `bash-exec` linter will report a warning
+          if a shell script is not executable. If set to `true`, the `bash-exec` linter
+          will report an error instead
         default_value: "false"
   # Shellcheck
   - class: ShellcheckLinter
@@ -66,7 +71,8 @@ linters:
     linter_repo: https://github.com/koalaman/shellcheck
     linter_rules_url: https://github.com/koalaman/shellcheck#gallery-of-bad-code
     linter_rules_inline_disable_url: https://github.com/koalaman/shellcheck/wiki/Ignore
-    linter_icon_png_url: https://raw.githubusercontent.com/oxsecurity/megalinter/main/docs/assets/icons/linters/shellcheck.png
+    linter_icon_png_url: 
+      https://raw.githubusercontent.com/oxsecurity/megalinter/main/docs/assets/icons/linters/shellcheck.png
     linter_megalinter_ref_url: never
     cli_lint_mode: list_of_files
     cli_lint_extra_args:
@@ -164,3 +170,4 @@ linters:
       vscode:
         - name: shell-format
           url: https://marketplace.visualstudio.com/items?itemName=foxundermoon.shell-format
+    descriptor_flavors: []

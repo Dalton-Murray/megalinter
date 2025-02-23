@@ -57,6 +57,7 @@ jobs:
         flavor:
           [
             "c_cpp",
+            "ci-custom",
             "ci_light",
             "cupcake",
             "documentation",

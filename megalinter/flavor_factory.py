@@ -65,8 +65,10 @@ def list_megalinter_flavors():
         "security": {"label": "Optimized for security", "strict": True},
         "swift": {"label": "Optimized for SWIFT based projects"},
         "terraform": {"label": "Optimized for TERRAFORM based projects"},
+        "ci-custom": {"label": "Custom flavor for CI"},
     }
     return flavors
+
 
 
 def get_image_flavor():

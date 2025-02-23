@@ -14,8 +14,6 @@
 #ARGTOP__START
 # renovate: datasource=docker depName=koalaman/shellcheck
 ARG BASH_SHELLCHECK_VERSION=v0.10.0
-# renovate: datasource=docker depName=rhysd/actionlint
-ARG BASH_SHFMT_VERSION=v3.10.0-alpine
 # renovate: datasource=docker depName=hadolint/hadolint
 ARG DOCKERFILE_HADOLINT_VERSION=v2.12.0-alpine
 # renovate: datasource=docker depName=zricethezav/gitleaks
@@ -29,7 +27,6 @@ ARG REPOSITORY_TRUFFLEHOG_VERSION=3.88.9
 #############################################################################################
 #FROM__START
 FROM koalaman/shellcheck:${BASH_SHELLCHECK_VERSION} AS shellcheck
-FROM mvdan/shfmt:${BASH_SHFMT_VERSION} AS shfmt
 FROM hadolint/hadolint:${DOCKERFILE_HADOLINT_VERSION} AS hadolint
 FROM zricethezav/gitleaks:${REPOSITORY_GITLEAKS_VERSION} AS gitleaks
 FROM trufflesecurity/trufflehog:${REPOSITORY_TRUFFLEHOG_VERSION} AS trufflehog
@@ -70,16 +67,8 @@ ARG CARGO_SHELLCHECK_SARIF_VERSION=0.7.0
 ARG NPM_JSCPD_VERSION=4.0.5
 # renovate: datasource=npm depName=npm-groovy-lint
 ARG NPM_GROOVY_LINT_VERSION=15.0.2
-# renovate: datasource=npm depName=@prantlf/jsonlint
-ARG NPM_PRANTLF_JSONLINT_VERSION=16.0.0
-# renovate: datasource=npm depName=v8r
-ARG NPM_V8R_VERSION=4.2.1
-# renovate: datasource=npm depName=prettier
-ARG NPM_PRETTIER_VERSION=3.5.1
 # renovate: datasource=github-tags depName=anchore/grype
 ARG REPOSITORY_GRYPE_VERSION=0.87.0
-# renovate: datasource=npm depName=@ls-lint/ls-lint
-ARG NPM_LS_LINT_LS_LINT_VERSION=2.2.3
 # renovate: datasource=npm depName=secretlint
 ARG NPM_SECRETLINT_VERSION=9.0.0
 # renovate: datasource=npm depName=@secretlint/secretlint-rule-preset-recommend
@@ -90,17 +79,10 @@ ARG NPM_SECRETLINT_SECRETLINT_FORMATTER_SARIF_VERSION=9.0.0
 ARG REPOSITORY_TRIVY_VERSION=0.59.1
 # renovate: datasource=github-tags depName=aquasecurity/trivy
 ARG REPOSITORY_TRIVY_SBOM_VERSION=0.59.1
-# renovate: datasource=pypi depName=yamllint
-ARG PIP_YAMLLINT_VERSION=1.35.1
-# renovate: datasource=pypi depName=pip
-ARG PIP_PIP_VERSION=25.0.1
-# renovate: datasource=pypi depName=virtualenv
-ARG PIP_VIRTUALENV_VERSION=20.29.2
 # renovate: datasource=github-tags depName=rust-lang/rust
 ARG RUST_RUST_VERSION=1.84.1
 
 ARG BASH_SHELLCHECK_VERSION
-ARG BASH_SHFMT_VERSION
 ARG DOCKERFILE_HADOLINT_VERSION
 ARG REPOSITORY_GITLEAKS_VERSION
 ARG REPOSITORY_TRUFFLEHOG_VERSION
@@ -128,9 +110,6 @@ RUN apk add --no-cache \
                 musl-dev \
                 openssh \
                 openjdk17 \
-                libxml2-dev \
-                libxml2-utils \
-                libgcc \
                 npm \
                 nodejs-current \
                 yarn \
@@ -168,11 +147,7 @@ ENV PATH="/root/.cargo/bin:${PATH}"
 #############################################################################################
 
 #PIPVENV__START
-RUN PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir pip==${PIP_PIP_VERSION} virtualenv==${PIP_VIRTUALENV_VERSION} \
-    && mkdir -p "/venvs/yamllint" && cd "/venvs/yamllint" && virtualenv . && source bin/activate && PYTHONDONTWRITEBYTECODE=1 pip3 install --no-cache-dir yamllint==${PIP_YAMLLINT_VERSION} && deactivate && cd ./../..  \
-    && find /venvs \( -type f \( -iname \*.pyc -o -iname \*.pyo \) -o -type d -iname __pycache__ \) -delete \
-    && rm -rf /root/.cache
-ENV PATH="${PATH}":/venvs/yamllint/bin
+
 #PIPVENV__END
 
 ############################
@@ -188,10 +163,6 @@ WORKDIR /node-deps
 RUN npm --no-cache install --ignore-scripts --omit=dev \
                 jscpd@${NPM_JSCPD_VERSION} \
                 npm-groovy-lint@${NPM_GROOVY_LINT_VERSION} \
-                @prantlf/jsonlint@${NPM_PRANTLF_JSONLINT_VERSION} \
-                v8r@${NPM_V8R_VERSION} \
-                prettier@${NPM_PRETTIER_VERSION} \
-                @ls-lint/ls-lint@${NPM_LS_LINT_LS_LINT_VERSION} \
                 secretlint@${NPM_SECRETLINT_VERSION} \
                 @secretlint/secretlint-rule-preset-recommend@${NPM_SECRETLINT_SECRETLINT_RULE_PRESET_RECOMMEND_VERSION} \
                 @secretlint/secretlint-formatter-sarif@${NPM_SECRETLINT_SECRETLINT_FORMATTER_SARIF_VERSION} && \
@@ -227,7 +198,6 @@ ENV PATH="/node-deps/node_modules/.bin:${PATH}" \
 
 #COPY__START
 COPY --link --from=shellcheck /bin/shellcheck /usr/bin/shellcheck
-COPY --link --from=shfmt /bin/shfmt /usr/bin/
 COPY --link --from=hadolint /bin/hadolint /usr/bin/hadolint
 COPY --link --from=gitleaks /usr/bin/gitleaks /usr/bin/
 COPY --link --from=trufflehog /usr/bin/trufflehog /usr/bin/
@@ -240,9 +210,6 @@ COPY --link --from=trufflehog /usr/bin/trufflehog /usr/bin/
 # shellcheck installation
 # Managed with COPY --link --from=shellcheck /bin/shellcheck /usr/bin/shellcheck
 #
-# shfmt installation
-# Managed with COPY --link --from=shfmt /bin/shfmt /usr/bin/
-#
 # jscpd installation
 #
 # hadolint installation
@@ -254,19 +221,11 @@ RUN wget -q -O - https://raw.githubusercontent.com/dotenv-linter/dotenv-linter/m
 # npm-groovy-lint installation
 ENV JAVA_HOME_17=/usr/lib/jvm/java-17-openjdk
 #
-# jsonlint installation
-#
-# v8r installation
-#
-# prettier installation
-#
 # gitleaks installation
 # Managed with COPY --link --from=gitleaks /usr/bin/gitleaks /usr/bin/
 #
 # grype installation
 RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/refs/tags/v${REPOSITORY_GRYPE_VERSION}/install.sh | sh -s -- -b /usr/local/bin \
-#
-# ls-lint installation
 #
 # secretlint installation
 #
@@ -281,12 +240,6 @@ RUN curl -sSfL https://raw.githubusercontent.com/anchore/grype/refs/tags/v${REPO
 #
 # trufflehog installation
 # Managed with COPY --link --from=trufflehog /usr/bin/trufflehog /usr/bin/
-#
-# prettier installation
-#
-# yamllint installation
-#
-# v8r installation
 #
 #OTHER__END
 

@@ -46,11 +46,14 @@ linters:
           url: https://www.jetbrains.com/pycharm/
       visual_studio:
         - name: Native Support
-          url: https://docs.microsoft.com/fr-fr/visualstudio/python/linting-python-code?view=vs-2019
+          url: 
+            https://docs.microsoft.com/fr-fr/visualstudio/python/linting-python-code?view=vs-2019
       vscode:
         - name: Native Support
           url: https://code.visualstudio.com/docs/python/linting#_pylint
   # BLACK
+    descriptor_flavors:
+      - ci-custom
   - linter_name: black
     name: PYTHON_BLACK
     is_formatter: true
@@ -63,7 +66,8 @@ linters:
     linter_repo: https://github.com/psf/black
     linter_speed: 3
     linter_banner_image_url: https://raw.githubusercontent.com/psf/black/master/docs/_static/logo2-readme.png
-    linter_rules_configuration_url: https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#configuration-format
+    linter_rules_configuration_url: 
+      https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#configuration-format
     config_file_name: pyproject.toml
     cli_config_arg_name: "--config"
     cli_lint_mode: list_of_files
@@ -98,7 +102,8 @@ linters:
           url: https://github.com/jorgenschaefer/elpy
       idea:
         - name: black
-          url: https://black.readthedocs.io/en/stable/integrations/editors.html#pycharm-intellij-idea
+          url: 
+            https://black.readthedocs.io/en/stable/integrations/editors.html#pycharm-intellij-idea
       sublime:
         - name: sublack
           url: https://github.com/jgirardet/sublack
@@ -106,6 +111,8 @@ linters:
         - name: VSCode Python Extension
           url: https://marketplace.visualstudio.com/items?itemName=ms-python.python
   # FLAKE8
+    descriptor_flavors:
+      - ci-custom
   - linter_name: flake8
     name: PYTHON_FLAKE8
     linter_url: https://flake8.pycqa.org
@@ -114,7 +121,8 @@ linters:
     linter_speed: 3
     linter_rules_url: https://flake8.pycqa.org/en/latest/user/error-codes.html
     linter_rules_configuration_url: https://flake8.pycqa.org/en/latest/user/configuration.html#project-configuration
-    linter_rules_inline_disable_url: https://flake8.pycqa.org/en/3.1.1/user/ignoring-errors.html#in-line-ignoring-errors
+    linter_rules_inline_disable_url: 
+      https://flake8.pycqa.org/en/3.1.1/user/ignoring-errors.html#in-line-ignoring-errors
     cli_lint_mode: list_of_files
     config_file_name: .flake8
     cli_config_arg_name: "--config"
@@ -141,6 +149,7 @@ linters:
         - name: Native Support
           url: https://code.visualstudio.com/docs/python/linting#_flake8
   # ISORT
+    descriptor_flavors: []
   - linter_name: isort
     name: PYTHON_ISORT
     is_formatter: true
@@ -197,22 +206,26 @@ linters:
         - name: VSCode Python Extension
           url: https://github.com/Microsoft/vscode-python
   # BANDIT
+    descriptor_flavors: []
   - linter_name: bandit
     name: PYTHON_BANDIT
     can_output_sarif: true
     descriptor_flavors:
       - python
       - security
+      - ci-custom
     linter_text: |
       bandit checks for security risks
 
       If you find it too harsh, you may define `PYTHON_BANDIT_DISABLE_ERRORS: true` in your `.mega-linter.yml` config file
     linter_url: https://bandit.readthedocs.io/en/latest/
     linter_repo: https://github.com/PyCQA/bandit
-    linter_rules_url: https://bandit.readthedocs.io/en/latest/plugins/index.html#complete-test-plugin-listing
+    linter_rules_url: 
+      https://bandit.readthedocs.io/en/latest/plugins/index.html#complete-test-plugin-listing
     linter_banner_image_url: https://github.com/PyCQA/bandit/raw/main/logo/logotype-sm.png
     linter_image_url: https://github.com/PyCQA/bandit/raw/main/logo/logomark.png
-    linter_icon_png_url: https://raw.githubusercontent.com/oxsecurity/megalinter/main/docs/assets/icons/linters/bandit.png
+    linter_icon_png_url: 
+      https://raw.githubusercontent.com/oxsecurity/megalinter/main/docs/assets/icons/linters/bandit.png
     linter_rules_configuration_url: https://bandit.readthedocs.io/en/latest/config.html#
     linter_rules_inline_disable_url: https://bandit.readthedocs.io/en/latest/config.html#suppressing-individual-lines
     cli_lint_mode: list_of_files
@@ -338,6 +351,7 @@ linters:
   #     pip:
   #       - pytype==${PIP_PYTYPE_VERSION}
   # PyRight
+    descriptor_flavors: []
   - class: PyrightLinter
     linter_name: pyright
     name: PYTHON_PYRIGHT
@@ -351,7 +365,8 @@ linters:
     linter_banner_image_url: https://github.com/microsoft/pyright/raw/main/docs/img/PyrightLarge.png
     linter_speed: 1
     linter_rules_configuration_url: https://github.com/microsoft/pyright/blob/main/docs/configuration.md
-    linter_rules_inline_disable_url: https://github.com/microsoft/pyright/blob/main/docs/comments.md#file-level-type-controls
+    linter_rules_inline_disable_url: 
+      https://github.com/microsoft/pyright/blob/main/docs/comments.md#file-level-type-controls
     cli_lint_mode: list_of_files
     config_file_name: pyrightconfig.json
     cli_config_arg_name: -p
@@ -384,6 +399,7 @@ linters:
         - name: PyRight
           url: https://marketplace.visualstudio.com/items?itemName=ms-pyright.pyright
   # ruff
+    descriptor_flavors: []
   - linter_name: ruff
     name: PYTHON_RUFF
     can_output_sarif: true
@@ -432,6 +448,7 @@ linters:
           url: https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff
 
   # ruff fmt
+    descriptor_flavors: []
   - linter_name: ruff-format
     class: RuffFormatLinter
     name: PYTHON_RUFF_FORMAT
@@ -479,3 +496,4 @@ linters:
       vscode:
         - name: Ruff
           url: https://marketplace.visualstudio.com/items?itemName=charliermarsh.ruff
+    descriptor_flavors: []

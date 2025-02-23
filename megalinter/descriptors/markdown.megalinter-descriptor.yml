@@ -15,17 +15,16 @@ linters:
         variable: MARKDOWN_DEFAULT_STYLE
         expected_value: markdownlint
         default_value: markdownlint
-    linter_text: Checks for errors in Markdown files, and can also auto-fix some of them.
-
-
-      [MarkdownLint](https://github.com/DavidAnson/markdownlint) is run through [markdownlint-cli](https://github.com/igorshubovych/markdownlint-cli)
-
-
-      To see MarkdownLint version, you can have a look in the dependencies of latest markdownlint-cli version.
+    linter_text: "Checks for errors in Markdown files, and can also auto-fix some
+      of them.\n\n[MarkdownLint](https://github.com/DavidAnson/markdownlint) is run
+      through [markdownlint-cli](https://github.com/igorshubovych/markdownlint-cli)\n
+      \nTo see MarkdownLint version, you can have a look in the dependencies of latest
+      markdownlint-cli version."
     linter_url: https://github.com/DavidAnson/markdownlint
     linter_repo: https://github.com/DavidAnson/markdownlint
     linter_rules_url: https://github.com/DavidAnson/markdownlint#rules--aliases
-    linter_image_url: https://davidanson.gallerycdn.vsassets.io/extensions/davidanson/vscode-markdownlint/0.37.1/1601748708034/Microsoft.VisualStudio.Services.Icons.Default
+    linter_image_url: 
+      https://davidanson.gallerycdn.vsassets.io/extensions/davidanson/vscode-markdownlint/0.37.1/1601748708034/Microsoft.VisualStudio.Services.Icons.Default
     linter_rules_configuration_url: https://github.com/igorshubovych/markdownlint-cli#configuration
     linter_rules_inline_disable_url: https://github.com/DavidAnson/markdownlint#configuration
     linter_rules_ignore_config_url: https://github.com/igorshubovych/markdownlint-cli#ignoring-files
@@ -58,6 +57,8 @@ linters:
         - name: vscode-markdownlint
           url: https://marketplace.visualstudio.com/items/DavidAnson.vscode-markdownlint
   # remark-lint
+    descriptor_flavors:
+      - ci-custom
   - linter_name: remark-lint
     disabled: true
     disabled_reason: "Bug in remark-lint: https://github.com/remarkjs/remark-lint/issues/322"
@@ -69,7 +70,8 @@ linters:
         default_value: markdownlint
     linter_url: https://remark.js.org/
     linter_repo: https://github.com/remarkjs/remark-lint
-    linter_image_url: https://raw.githubusercontent.com/remarkjs/remark-lint/02295bc/logo.svg?sanitize=true
+    linter_image_url: 
+      https://raw.githubusercontent.com/remarkjs/remark-lint/02295bc/logo.svg?sanitize=true
     linter_rules_url: https://github.com/remarkjs/remark-lint/blob/main/doc/rules.md#list-of-rules
     linter_rules_configuration_url: https://github.com/remarkjs/remark-lint#configuring-remark-lint
     linter_rules_inline_disable_url: https://github.com/remarkjs/remark-message-control#markers
@@ -111,6 +113,7 @@ linters:
         - name: vscode-remark-lint
           url: https://github.com/drewbourne/vscode-remark-lint
   # Markdown Link Check
+    descriptor_flavors: []
   - linter_name: markdown-link-check
     linter_url: https://github.com/tcort/markdown-link-check
     linter_repo: https://github.com/tcort/markdown-link-check
@@ -137,6 +140,8 @@ linters:
       npm:
         - markdown-link-check@${NPM_MARKDOWN_LINK_CHECK_VERSION}
   # Markdown table formatter
+    descriptor_flavors:
+      - ci-custom
   - linter_name: markdown-table-formatter
     is_formatter: true
     linter_text: |
@@ -164,3 +169,5 @@ linters:
       vscode:
         - name: Markdown Table Prettify Extension
           url: https://github.com/darkriszty/MarkdownTablePrettify-VSCodeExt
+    descriptor_flavors:
+      - ci-custom

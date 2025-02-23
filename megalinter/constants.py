@@ -17,9 +17,9 @@ ML_DOCKER_IMAGE_LEGACY = "nvuillam/mega-linter"
 ML_DOCKER_IMAGE_LEGACY_V5 = "megalinter/megalinter"
 
 DEFAULT_DOCKER_WORKSPACE_DIR = "/tmp/lint"
-DEFAULT_REPORT_FOLDER_NAME = "megalinter-reports"
-DEFAULT_SARIF_REPORT_FILE_NAME = "megalinter-report.sarif"
-DEFAULT_MARKDOWN_SUMMARY_REPORT_FILE_NAME = "megalinter-report.md"
+DEFAULT_REPORT_FOLDER_NAME = "scanner-reports"
+DEFAULT_SARIF_REPORT_FILE_NAME = "scanner-report.sarif"
+DEFAULT_MARKDOWN_SUMMARY_REPORT_FILE_NAME = "scanner-report.md"
 DEFAULT_SARIF_SCHEMA_URI = "https://json.schemastore.org/sarif-2.1.0.json"
 DEFAULT_SARIF_VERSION = "2.1.0"
 DEFAULT_RELEASE = "v8"
@@ -84,8 +84,5 @@ DEFAULT_DOCKERFILE_FLAVOR_CARGO_PACKAGES = [
 ]
 
 OX_MARKDOWN_LINK = (
-    "[![MegaLinter is graciously provided by OX Security]"
-    + "(https://raw.githubusercontent.com/oxsecurity/megalinter/main/"
-    + "docs/assets/images/ox-banner.png)]"
-    + "(https://www.ox.security/?ref=megalinter)"
+    ""
 )
