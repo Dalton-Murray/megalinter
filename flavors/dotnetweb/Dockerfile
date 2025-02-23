@@ -27,7 +27,7 @@ ARG PROTOBUF_PROTOLINT_VERSION=0.53.0
 # renovate: datasource=docker depName=zricethezav/gitleaks
 ARG REPOSITORY_GITLEAKS_VERSION=v8.23.3
 # renovate: datasource=docker depName=trufflesecurity/trufflehog 
-ARG REPOSITORY_TRUFFLEHOG_VERSION=3.88.9
+ARG REPOSITORY_TRUFFLEHOG_VERSION=3.88.12
 # renovate: datasource=docker depName=jdkato/vale
 ARG SPELL_VALE_VERSION=v3.9.4
 # renovate: datasource=docker depName=lycheeverse/lychee
@@ -201,7 +201,7 @@ ARG REPOSITORY_TRIVY_SBOM_VERSION=0.59.1
 # renovate: datasource=pypi depName=snakefmt
 ARG PIP_SNAKEFMT_VERSION=0.10.2
 # renovate: datasource=npm depName=cspell
-ARG NPM_CSPELL_VERSION=8.17.3
+ARG NPM_CSPELL_VERSION=8.17.5
 # renovate: datasource=pypi depName=proselint
 ARG PIP_PROSELINT_VERSION=0.14.0
 # renovate: datasource=pypi depName=sqlfluff
@@ -223,7 +223,7 @@ ARG PIP_PIP_VERSION=25.0.1
 # renovate: datasource=pypi depName=virtualenv
 ARG PIP_VIRTUALENV_VERSION=20.29.2
 # renovate: datasource=github-tags depName=rust-lang/rust
-ARG RUST_RUST_VERSION=1.84.1
+ARG RUST_RUST_VERSION=1.85.0
 
 ARG ACTION_ACTIONLINT_VERSION
 ARG BASH_SHELLCHECK_VERSION
